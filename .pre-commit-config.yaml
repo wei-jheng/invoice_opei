@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.10.2  # 與 CI/CD setup-uv version 保持一致；升級時兩處同步更新
+    hooks:
+      # 確保 uv.lock 與 pyproject.toml 保持同步
+      - id: uv-lock
+
+      # 自動將 uv.lock 匯出為 requirements.txt（Databricks cluster 安裝依賴時需要）
+      - id: uv-export
+        args: [--frozen, --no-dev, --output-file, requirements.txt]
+
+  # ruff: lint (auto-fix) + format (auto-reformat)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0  # keep in sync with ruff version in pyproject.toml
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # mypy: static type checking
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: uv run mypy src/
+        language: system
+        pass_filenames: false
+        types: [python]

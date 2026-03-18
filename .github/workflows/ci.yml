@@ -1,0 +1,15 @@
+name: CI
+
+# PR 合併進 main 前執行：品質檢查 + bundle validate
+# 只保護 main：uat→prod 的品質驗證已在 PR→main 階段完成，
+# prod 部署另由 GitHub environment protection rules 的人為核准把關。
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    uses: ./.github/workflows/quality.yml
+    permissions:
+      id-token: write
+      contents: read

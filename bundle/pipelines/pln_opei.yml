@@ -1,0 +1,55 @@
+resources:
+  pipelines:
+    pln_opei:
+      name: "[${bundle.target}] pln_opei"
+      tags:
+        env: ${bundle.target}
+        domain: opei
+        owner: data_eng
+        resource_type: pipeline
+        pipeline_id: PPL001
+      serverless: true
+      catalog: ${var.catalog_name}
+      schema: ${var.schema_opei}
+      environment:
+        dependencies:
+          - ${workspace.artifact_path}/.internal/invoice_opei-${var.whl_version}-py3-none-any.whl
+          - ${var.pif_artifact_base_path}/pipeline_ingestion_framework-${var.pif_whl_version}-py3-none-any.whl
+          - ${var.dvf_artifact_base_path}/data_validation_framework-${var.dvf_whl_version}-py3-none-any.whl
+      configuration:
+        log_level: ${var.log_level}
+        workspace_file_path: ${workspace.file_path}
+        base_path: ${var.base_path_opei}
+        start_date: ${var.start_date}
+        end_date: ${var.end_date}
+        catalog_bronze_raw: ${var.catalog_name}
+        schema_bronze_raw:  ${var.schema_opei}
+        bronze_raw_table_suffix: ${var.bronze_raw_table_suffix}
+        catalog_silver_source: ${var.catalog_name_silver_source}
+        schema_silver_source:  ${var.schema_opei}
+        ingest_dt: ${var.ingest_dt}
+        bronze_raw_flow_version_opei_frontend_invoice_list:   ${var.bronze_raw_flow_version_opei_frontend_invoice_list}
+        bronze_raw_flow_version_opei_iuo_invoice_detail:      ${var.bronze_raw_flow_version_opei_iuo_invoice_detail}
+        bronze_raw_flow_version_opei_iuo_carrier_inv_detail:  ${var.bronze_raw_flow_version_opei_iuo_carrier_inv_detail}
+        bronze_raw_flow_version_opei_iuo_hand_invoice_detail: ${var.bronze_raw_flow_version_opei_iuo_hand_invoice_detail}
+        silver_source_flow_version_opei_frontend_invoice_list:   ${var.silver_source_flow_version_opei_frontend_invoice_list}
+        silver_source_flow_version_opei_iuo_invoice_detail:      ${var.silver_source_flow_version_opei_iuo_invoice_detail}
+        silver_source_flow_version_opei_iuo_carrier_inv_detail:  ${var.silver_source_flow_version_opei_iuo_carrier_inv_detail}
+        silver_source_flow_version_opei_iuo_hand_invoice_detail: ${var.silver_source_flow_version_opei_iuo_hand_invoice_detail}
+      libraries:
+        - file:
+            path: ../../workflow/pln_opei/transformations/bronze_raw/opei_frontend_invoice_list.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/bronze_raw/opei_iuo_invoice_detail.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/bronze_raw/opei_iuo_carrier_inv_detail.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/bronze_raw/opei_iuo_hand_invoice_detail.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/silver_source/opei_frontend_invoice_list.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/silver_source/opei_iuo_invoice_detail.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/silver_source/opei_iuo_carrier_inv_detail.py
+        - file:
+            path: ../../workflow/pln_opei/transformations/silver_source/opei_iuo_hand_invoice_detail.py

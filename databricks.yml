@@ -1,0 +1,169 @@
+# Databricks Asset Bundle — invoice_opei
+# OPEI electronic invoice SDP ingestion pipeline.
+
+bundle:
+  name: invoice_opei
+
+include:
+  - bundle/pipelines/*.yml
+  - bundle/jobs/*.yml
+
+variables:
+  whl_version:
+    description: "Wheel version, must match the git tag (e.g. 0.1.0). Set automatically by CI via --var=whl_version=<tag>."
+    default: "0.1.0"
+  pif_whl_version:
+    description: "pipeline_ingestion_framework wheel version. Set automatically by CI."
+    default: "0.1.0"
+  dvf_whl_version:
+    description: "data_validation_framework wheel version. Set automatically by CI."
+    default: "0.1.5"
+  log_level:
+    description: Logging level for pipeline tasks (DEBUG / INFO / WARNING / ERROR)
+    default: INFO
+  base_path_opei:
+    description: "Base path for opei data files (Databricks Volume path)."
+    default: "/Volumes/prod_bronze_stage/set_opei/merchant_portal_invoice_carrier"
+  start_date:
+    description: "Backfill start date (yyyyMMdd). Empty = yesterday."
+    default: ""
+  end_date:
+    description: "Backfill end date (yyyyMMdd). Empty = start_date."
+    default: ""
+  catalog_name:
+    description: "Unity Catalog name for bronze_raw layer."
+    default: "sandbox"
+  catalog_name_silver_source:
+    description: "Unity Catalog for silver_source layer."
+    default: "sandbox"
+  ingest_dt:
+    description: "Job 執行時間的 Unix timestamp（秒）。由 CI 在每次 deploy 前注入。"
+    default: "0"
+  bronze_raw_table_suffix:
+    description: "Suffix appended to bronze_raw table names. Set to '_raw' in sandbox."
+    default: ""
+  schema_opei:
+    description: "Schema for pln_opei pipeline."
+    default: "set_opei"
+  pif_artifact_base_path:
+    description: "Base path for pipeline_ingestion_framework whl artifact. Set per target."
+    default: "/Workspace/Users/wei.jheng@mail.7-11.com.tw/.bundle/pipeline_ingestion_framework/artifacts/.internal"
+  dvf_artifact_base_path:
+    description: "Base path for data_validation_framework whl artifact. Set per target."
+    default: "/Workspace/Users/wei.jheng@mail.7-11.com.tw/.bundle/data_validation_framework/artifacts/.internal"
+  bronze_raw_flow_version_opei_frontend_invoice_list:
+    description: "bronze_raw flow version for opei_frontend_invoice_list. Increment to force full reprocess."
+    default: "1"
+  bronze_raw_flow_version_opei_iuo_invoice_detail:
+    description: "bronze_raw flow version for opei_iuo_invoice_detail. Increment to force full reprocess."
+    default: "1"
+  bronze_raw_flow_version_opei_iuo_carrier_inv_detail:
+    description: "bronze_raw flow version for opei_iuo_carrier_inv_detail. Increment to force full reprocess."
+    default: "1"
+  bronze_raw_flow_version_opei_iuo_hand_invoice_detail:
+    description: "bronze_raw flow version for opei_iuo_hand_invoice_detail. Increment to force full reprocess."
+    default: "1"
+  silver_source_flow_version_opei_frontend_invoice_list:
+    description: "silver_source flow version for opei_frontend_invoice_list. Increment to force full reprocess."
+    default: "1"
+  silver_source_flow_version_opei_iuo_invoice_detail:
+    description: "silver_source flow version for opei_iuo_invoice_detail. Increment to force full reprocess."
+    default: "1"
+  silver_source_flow_version_opei_iuo_carrier_inv_detail:
+    description: "silver_source flow version for opei_iuo_carrier_inv_detail. Increment to force full reprocess."
+    default: "1"
+  silver_source_flow_version_opei_iuo_hand_invoice_detail:
+    description: "silver_source flow version for opei_iuo_hand_invoice_detail. Increment to force full reprocess."
+    default: "1"
+  slack_notify_destination_id:
+    description: "Notification Destination ID → #data-team-notify (job start/success)"
+    default: ""
+  slack_alert_destination_id:
+    description: "Notification Destination ID → #data-team-alert (job failure)"
+    default: ""
+
+targets:
+  sandbox:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-ba4e934d-4f80.cloud.databricks.com
+      root_path: ~/.bundle/${bundle.name}
+    variables:
+      log_level: DEBUG
+      schema_opei: set_wei_jheng
+      bronze_raw_table_suffix: _raw
+
+  dev:
+    workspace:
+      root_path: /Shared/bundles/${bundle.name}/dev
+    variables:
+      catalog_name: dev_bronze_raw
+      catalog_name_silver_source: dev_silver_source
+      pif_artifact_base_path: "/Workspace/Shared/bundles/pipeline_ingestion_framework/dev/artifacts/.internal"
+      dvf_artifact_base_path: "/Workspace/Shared/bundles/data_validation_framework/dev/artifacts/.internal"
+      slack_notify_destination_id: "a24c028f-936d-49f3-a203-7ffeeb1e1925"
+      slack_alert_destination_id: "0f3a2d31-52ed-4a69-a2e5-96616cf93ed4"
+    resources:
+      jobs:
+        ing_set_opei:
+          webhook_notifications:
+            on_start:
+              - id: ${var.slack_notify_destination_id}
+            on_success:
+              - id: ${var.slack_notify_destination_id}
+            on_failure:
+              - id: ${var.slack_alert_destination_id}
+
+  uat:
+    workspace:
+      root_path: /Shared/bundles/${bundle.name}/uat
+    variables:
+      catalog_name: uat_bronze_raw
+      catalog_name_silver_source: uat_silver_source
+      pif_artifact_base_path: "/Workspace/Shared/bundles/pipeline_ingestion_framework/uat/artifacts/.internal"
+      dvf_artifact_base_path: "/Workspace/Shared/bundles/data_validation_framework/uat/artifacts/.internal"
+      slack_notify_destination_id: "b5d86d0f-6489-4ace-baea-a306094ece5a"
+      slack_alert_destination_id: "4feefb1d-965a-424b-863d-ed98050a95df"
+    resources:
+      jobs:
+        ing_set_opei:
+          webhook_notifications:
+            on_start:
+              - id: ${var.slack_notify_destination_id}
+            on_success:
+              - id: ${var.slack_notify_destination_id}
+            on_failure:
+              - id: ${var.slack_alert_destination_id}
+
+  uat_dev:
+    workspace:
+      root_path: /Shared/bundles/${bundle.name}/uat_dev
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Shared/bundles/${bundle.name}/prod
+    variables:
+      catalog_name: prod_bronze_raw
+      catalog_name_silver_source: prod_silver_source
+      pif_artifact_base_path: "/Workspace/Shared/bundles/pipeline_ingestion_framework/prod/artifacts/.internal"
+      dvf_artifact_base_path: "/Workspace/Shared/bundles/data_validation_framework/prod/artifacts/.internal"
+      slack_notify_destination_id: "51fff447-a32a-46d6-b441-ea7b14113f11"
+      slack_alert_destination_id: "377eff5e-8487-4405-89b4-35ac79f83f57"
+    resources:
+      jobs:
+        ing_set_opei:
+          webhook_notifications:
+            on_start:
+              - id: ${var.slack_notify_destination_id}
+            on_success:
+              - id: ${var.slack_notify_destination_id}
+            on_failure:
+              - id: ${var.slack_alert_destination_id}
+
+artifacts:
+  invoice_opei:
+    type: whl
+    path: .
+    build: uv build --wheel

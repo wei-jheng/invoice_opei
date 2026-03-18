@@ -1,0 +1,109 @@
+# Data Validation Pipeline Configuration — opei carrier (opei_iuo_carrier_inv_detail)
+# 每個 [[task]] 表示 pipeline 中的一個 task，順序即執行順序
+
+# =====================================
+# Data Source Configuration (共用)
+# =====================================
+
+[data]
+# base_path 由 --base-path CLI 參數注入（databricks.yml ${var.base_path_opei}）
+base_path = "/Volumes/prod_bronze_stage/set_opei/merchant_portal_invoice_carrier"
+file_name = "{date_folder}/cd_{file_date}.csv"
+
+# 請根據 src/data_validation_framework/format_options 參數
+[reader]
+type = "csv"
+delimiter = "|"
+has_header = false
+schema = "data_validation_framework.schema.set.opei.opei_iuo_carrier_inv_detail.schema"
+encoding = "utf-8"
+quotechar = "\u0000"
+multi_line = false
+
+# =====================================
+# Daily Schedule Configuration
+# =====================================
+
+[schedule]
+mode = "daily"           # daily / weekly / interval / hourly
+run_time = "02:00"       # 每天幾點跑
+date_offset_days = 1     # 預設抓昨天資料
+
+# =====================================
+# Backfill Configuration
+# =====================================
+
+[backfill]
+enabled = true            # 是否啟動 backfill 機制: 啟動 backfill，則不執行 schedule
+start_date = "2025-09-25" # 資料起始時間
+end_date   = "2025-09-26" # 資料結束時間
+task_ids = ["task_4", "task_5", "task_6", "task_7", "task_8", "task_9"]  # 只跑部分 task
+
+# =====================================
+# Task Definitions
+# =====================================
+
+# -------------------------------
+[[task]]
+id = "task_1"
+name = "FileExistenceCheck"
+enabled = true
+
+# -------------------------------
+[[task]]
+id = "task_2"
+name = "FileTimestampCheck"
+enabled = true
+max_age_minutes = 60
+min_age_minutes = 1
+
+# -------------------------------
+[[task]]
+id = "task_3"
+name = "FileReadableCheck"
+enabled = true
+validator = {name = "FileReadableValidator"}
+
+# -------------------------------
+[[task]]
+id = "task_4"
+name = "FileSchemaCheck"
+enabled = true
+validator = {name = "SchemaValidator", expected_schema = "data_validation_framework.schema.set.opei.opei_iuo_carrier_inv_detail.schema", check_columns = false}
+
+# -------------------------------
+[[task]]
+id = "task_5"
+name = "FileRowCountCheck"
+enabled = true
+validator = {name = "RowCountValidator", min_rows = 1, max_rows = 100000000}
+
+# -------------------------------
+[[task]]
+id = "task_6"
+name = "FilePrimaryKeyCheck"
+enabled = true
+validator = {name = "PrimaryKeyValidator", columns = ["invoice_number", "invoice_date", "seq_number", "gid"]}
+
+# -------------------------------
+[[task]]
+id = "task_7"
+name = "FileNullOrEmptyCheck"
+enabled = true
+validator = {name = "NullOrEmptyValidator", columns = ["invoice_number", "invoice_date", "seq_number", "gid"]}
+
+# -------------------------------
+[[task]]
+id = "task_8"
+name = "FileDateCheck"
+enabled = true
+validator = {name = "DateValidator", columns = ["invoice_date", "cre_date", "upd_date"], date_format = "yyyyMMdd", allow_future = false}
+
+# -------------------------------
+# Task 9: Column Length Check
+# -------------------------------
+[[task]]
+id = "task_9"
+name = "FileLengthCheck"
+enabled = true
+validator = {name = "LengthValidator", length_rules = {invoice_number = {fixed = 10}, seq_number = {fixed = 3}, gid = {fixed = 17}}}

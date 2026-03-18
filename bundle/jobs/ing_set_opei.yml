@@ -1,0 +1,79 @@
+resources:
+  jobs:
+    ing_set_opei:
+      name: "[${bundle.target}] ing_set_opei"
+      tags:
+        env: ${bundle.target}
+        domain: opei
+        owner: data_eng
+        resource_type: job
+        job_id: J001
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - ${workspace.artifact_path}/.internal/invoice_opei-${var.whl_version}-py3-none-any.whl
+              - ${var.pif_artifact_base_path}/pipeline_ingestion_framework-${var.pif_whl_version}-py3-none-any.whl
+              - ${var.dvf_artifact_base_path}/data_validation_framework-${var.dvf_whl_version}-py3-none-any.whl
+      tasks:
+        - task_key: validate_invoice
+          environment_key: default
+          python_wheel_task:
+            package_name: data-validation-framework
+            entry_point: data-validation
+            parameters:
+              - "--config"
+              - "${workspace.file_path}/resources/config/set_opei/invoice_data_validation.toml"
+              - "--log-level"
+              - "${var.log_level}"
+              - "--base-path"
+              - "${var.base_path_opei}"
+
+        - task_key: validate_bu
+          environment_key: default
+          python_wheel_task:
+            package_name: data-validation-framework
+            entry_point: data-validation
+            parameters:
+              - "--config"
+              - "${workspace.file_path}/resources/config/set_opei/bu_data_validation.toml"
+              - "--log-level"
+              - "${var.log_level}"
+              - "--base-path"
+              - "${var.base_path_opei}"
+
+        - task_key: validate_carrier
+          environment_key: default
+          python_wheel_task:
+            package_name: data-validation-framework
+            entry_point: data-validation
+            parameters:
+              - "--config"
+              - "${workspace.file_path}/resources/config/set_opei/carrier_data_validation.toml"
+              - "--log-level"
+              - "${var.log_level}"
+              - "--base-path"
+              - "${var.base_path_opei}"
+
+        - task_key: validate_hand
+          environment_key: default
+          python_wheel_task:
+            package_name: data-validation-framework
+            entry_point: data-validation
+            parameters:
+              - "--config"
+              - "${workspace.file_path}/resources/config/set_opei/hand_data_validation.toml"
+              - "--log-level"
+              - "${var.log_level}"
+              - "--base-path"
+              - "${var.base_path_opei}"
+
+        - task_key: dlt_opei_pipeline
+          depends_on:
+            - task_key: validate_invoice
+            - task_key: validate_bu
+            - task_key: validate_carrier
+            - task_key: validate_hand
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.pln_opei.id}

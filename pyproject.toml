@@ -9,10 +9,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dependencies = [
-    "pyarrow (>=23.0.0,<24.0.0)",
-    "pipeline-ingestion-framework",
-]
+dependencies = []
 
 [tool.uv.sources]
 pipeline-ingestion-framework = { path = "../pipeline_ingestion_framework", editable = true }
@@ -41,6 +38,8 @@ dev = [
     "pytest (>=9.0.2,<10.0.0)",
     "pytest-cov (>=7.0.0,<8.0.0)",
     "pyspark (>=4.0.0)",
+    "pyarrow (>=23.0.0,<24.0.0)",
+    "pipeline-ingestion-framework",
     "mypy>=1.19.1",
     "ruff>=0.15.0",
     "pre-commit>=4.5.1",

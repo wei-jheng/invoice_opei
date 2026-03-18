@@ -143,15 +143,13 @@ wheels = [
 [[package]]
 name = "invoice-opei"
 source = { editable = "." }
-dependencies = [
-    { name = "pipeline-ingestion-framework" },
-    { name = "pyarrow" },
-]
 
 [package.dev-dependencies]
 dev = [
     { name = "mypy" },
+    { name = "pipeline-ingestion-framework" },
     { name = "pre-commit" },
+    { name = "pyarrow" },
     { name = "pyspark" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -159,15 +157,13 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "pipeline-ingestion-framework", editable = "../pipeline_ingestion_framework" },
-    { name = "pyarrow", specifier = ">=23.0.0,<24.0.0" },
-]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "mypy", specifier = ">=1.19.1" },
+    { name = "pipeline-ingestion-framework", editable = "../pipeline_ingestion_framework" },
     { name = "pre-commit", specifier = ">=4.5.1" },
+    { name = "pyarrow", specifier = ">=23.0.0,<24.0.0" },
     { name = "pyspark", specifier = ">=4.0.0" },
     { name = "pytest", specifier = ">=9.0.2,<10.0.0" },
     { name = "pytest-cov", specifier = ">=7.0.0,<8.0.0" },

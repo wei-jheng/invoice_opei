@@ -90,6 +90,14 @@ targets:
       log_level: DEBUG
       schema_opei: set_wei_jheng
       bronze_raw_table_suffix: _raw
+      bronze_raw_flow_version_opei_frontend_invoice_list: "2"
+      bronze_raw_flow_version_opei_iuo_invoice_detail: "2"
+      bronze_raw_flow_version_opei_iuo_carrier_inv_detail: "2"
+      bronze_raw_flow_version_opei_iuo_hand_invoice_detail: "2"
+      silver_source_flow_version_opei_frontend_invoice_list: "2"
+      silver_source_flow_version_opei_iuo_invoice_detail: "2"
+      silver_source_flow_version_opei_iuo_carrier_inv_detail: "2"
+      silver_source_flow_version_opei_iuo_hand_invoice_detail: "2"
 
   dev:
     workspace:

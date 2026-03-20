@@ -1,5 +1,8 @@
 from data_validation_framework.schema.set.opei.opei_frontend_invoice_list import schema
-from pipeline_ingestion_framework.factory.registration import register_bronze_raw_table
+from pipeline_ingestion_framework.factory.registration import (
+    BronzeRawTableSpec,
+    register_bronze_raw_table,
+)
 
 from invoice_opei.config.constants import OPEI_INVOICE, OPEI_INVOICE_CDC
 
@@ -10,4 +13,6 @@ except NameError:
 
     spark = SparkSession.builder.getOrCreate()
 
-register_bronze_raw_table(spark, OPEI_INVOICE, OPEI_INVOICE_CDC, schema)
+register_bronze_raw_table(
+    spark, BronzeRawTableSpec(OPEI_INVOICE, OPEI_INVOICE_CDC, schema)
+)

@@ -1,5 +1,8 @@
 from data_validation_framework.schema.set.opei.opei_iuo_carrier_inv_detail import schema
-from pipeline_ingestion_framework.factory.registration import register_bronze_raw_table
+from pipeline_ingestion_framework.factory.registration import (
+    BronzeRawTableSpec,
+    register_bronze_raw_table,
+)
 
 from invoice_opei.config.constants import (
     OPEI_IUO_CARRIER_INV_DETAIL,
@@ -14,5 +17,8 @@ except NameError:
     spark = SparkSession.builder.getOrCreate()
 
 register_bronze_raw_table(
-    spark, OPEI_IUO_CARRIER_INV_DETAIL, OPEI_IUO_CARRIER_INV_DETAIL_CDC, schema
+    spark,
+    BronzeRawTableSpec(
+        OPEI_IUO_CARRIER_INV_DETAIL, OPEI_IUO_CARRIER_INV_DETAIL_CDC, schema
+    ),
 )

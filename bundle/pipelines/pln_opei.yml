@@ -8,6 +8,7 @@ resources:
         owner: data_eng
         resource_type: pipeline
         pipeline_id: PPL001
+      allow_duplicate_names: true
       serverless: true
       catalog: ${var.catalog_name}
       schema: ${var.schema_opei}
@@ -27,7 +28,6 @@ resources:
         bronze_raw_table_suffix: ${var.bronze_raw_table_suffix}
         catalog_silver_source: ${var.catalog_name_silver_source}
         schema_silver_source:  ${var.schema_opei}
-        ingest_dt: ${var.ingest_dt}
         bronze_raw_flow_version_opei_frontend_invoice_list:   ${var.bronze_raw_flow_version_opei_frontend_invoice_list}
         bronze_raw_flow_version_opei_iuo_invoice_detail:      ${var.bronze_raw_flow_version_opei_iuo_invoice_detail}
         bronze_raw_flow_version_opei_iuo_carrier_inv_detail:  ${var.bronze_raw_flow_version_opei_iuo_carrier_inv_detail}

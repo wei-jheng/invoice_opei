@@ -36,9 +36,6 @@ variables:
   catalog_name_silver_source:
     description: "Unity Catalog for silver_source layer."
     default: "sandbox"
-  ingest_dt:
-    description: "Job 執行時間的 Unix timestamp（秒）。由 CI 在每次 deploy 前注入。"
-    default: "0"
   bronze_raw_table_suffix:
     description: "Suffix appended to bronze_raw table names. Set to '_raw' in sandbox."
     default: ""

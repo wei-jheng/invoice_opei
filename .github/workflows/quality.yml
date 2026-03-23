@@ -23,6 +23,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout pipeline-ingestion-framework
+        run: git clone https://github.com/wei-jheng/pipeline_ingestion_framework.git ../pipeline_ingestion_framework --depth 1
+
       - name: Install uv
         uses: astral-sh/setup-uv@v7
         with:

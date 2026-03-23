@@ -45,6 +45,9 @@ jobs:
       - name: Setup Databricks CLI
         uses: databricks/setup-cli@v0.291.0
 
+      - name: Configure GitHub credentials
+        run: echo "${{ secrets.GH_PAT }}" | gh auth login --with-token
+
       - name: Log auth info
         run: databricks auth env
 
@@ -52,14 +55,8 @@ jobs:
         run: |
           WHL_FILE=$(ls dist/*.whl | head -1)
           WHL_VERSION=$(basename "$WHL_FILE" | cut -d'-' -f2)
-          PIF_VERSION=$(databricks workspace list \
-            "/Shared/bundles/pipeline_ingestion_framework/dev/artifacts/.internal" \
-            --output json \
-            | python3 -c "import json,sys,re; objs=json.load(sys.stdin).get('objects',[]); whls=[o['path'] for o in objs if 'pipeline_ingestion_framework-' in o.get('path','')]; sys.exit('ERROR: PIF whl not found') if not whls else None; m=re.search(r'pipeline_ingestion_framework-(.+?)-py3',whls[-1]); print(m.group(1)) if m else sys.exit('ERROR: cannot parse PIF version')")
-          DVF_VERSION=$(databricks workspace list \
-            "/Shared/bundles/data_validation_framework/dev/artifacts/.internal" \
-            --output json \
-            | python3 -c "import json,sys,re; objs=json.load(sys.stdin).get('objects',[]); whls=[o['path'] for o in objs if 'data_validation_framework-' in o.get('path','')]; sys.exit('ERROR: DVF whl not found') if not whls else None; m=re.search(r'data_validation_framework-(.+?)-py3',whls[-1]); print(m.group(1)) if m else sys.exit('ERROR: cannot parse DVF version')")
+          PIF_VERSION=$(gh api repos/wei-jheng/pipeline_ingestion_framework/releases/latest --jq '.tag_name' | sed 's/^v//')
+          DVF_VERSION=$(gh api repos/wei-jheng/data_validation_framework/releases/latest --jq '.tag_name' | sed 's/^v//')
           databricks bundle deploy -t dev \
             --var="whl_version=$WHL_VERSION" \
             --var="pif_whl_version=$PIF_VERSION" \

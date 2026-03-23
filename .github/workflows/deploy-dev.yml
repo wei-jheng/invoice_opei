@@ -55,8 +55,8 @@ jobs:
         run: |
           WHL_FILE=$(ls dist/*.whl | head -1)
           WHL_VERSION=$(basename "$WHL_FILE" | cut -d'-' -f2)
-          PIF_VERSION=$(gh api repos/wei-jheng/pipeline_ingestion_framework/releases/latest --jq '.tag_name' | sed 's/^v//')
-          DVF_VERSION=$(gh api repos/wei-jheng/data_validation_framework/releases/latest --jq '.tag_name' | sed 's/^v//')
+          PIF_VERSION=$(gh api repos/wei-jheng/pipeline_ingestion_framework/tags --jq '.[0].name' | sed 's/^v//')
+          DVF_VERSION=$(gh api repos/wei-jheng/data_validation_framework/tags --jq '.[0].name' | sed 's/^v//')
           databricks bundle deploy -t dev \
             --var="whl_version=$WHL_VERSION" \
             --var="pif_whl_version=$PIF_VERSION" \

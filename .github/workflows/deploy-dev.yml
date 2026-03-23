@@ -48,19 +48,16 @@ jobs:
       - name: Log auth info
         run: databricks auth env
 
-      - name: Debug PIF path
-        run: databricks workspace list "/Workspace/Shared/bundles/pipeline_ingestion_framework/dev/artifacts/.internal" 2>&1 || true
-
       - name: Deploy to Dev
         run: |
           WHL_FILE=$(ls dist/*.whl | head -1)
           WHL_VERSION=$(basename "$WHL_FILE" | cut -d'-' -f2)
           PIF_VERSION=$(databricks workspace list \
-            "/Workspace/Shared/bundles/pipeline_ingestion_framework/dev/artifacts/.internal" \
+            "/Shared/bundles/pipeline_ingestion_framework/dev/artifacts/.internal" \
             --output json \
             | python3 -c "import json,sys,re; objs=json.load(sys.stdin).get('objects',[]); whls=[o['path'] for o in objs if 'pipeline_ingestion_framework-' in o.get('path','')]; sys.exit('ERROR: PIF whl not found') if not whls else None; m=re.search(r'pipeline_ingestion_framework-(.+?)-py3',whls[-1]); print(m.group(1)) if m else sys.exit('ERROR: cannot parse PIF version')")
           DVF_VERSION=$(databricks workspace list \
-            "/Workspace/Shared/bundles/data_validation_framework/dev/artifacts/.internal" \
+            "/Shared/bundles/data_validation_framework/dev/artifacts/.internal" \
             --output json \
             | python3 -c "import json,sys,re; objs=json.load(sys.stdin).get('objects',[]); whls=[o['path'] for o in objs if 'data_validation_framework-' in o.get('path','')]; sys.exit('ERROR: DVF whl not found') if not whls else None; m=re.search(r'data_validation_framework-(.+?)-py3',whls[-1]); print(m.group(1)) if m else sys.exit('ERROR: cannot parse DVF version')")
           databricks bundle deploy -t dev \

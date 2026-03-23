@@ -48,6 +48,9 @@ jobs:
       - name: Log auth info
         run: databricks auth env
 
+      - name: Debug PIF path
+        run: databricks workspace list "/Workspace/Shared/bundles/pipeline_ingestion_framework/dev/artifacts/.internal" 2>&1 || true
+
       - name: Deploy to Dev
         run: |
           WHL_FILE=$(ls dist/*.whl | head -1)

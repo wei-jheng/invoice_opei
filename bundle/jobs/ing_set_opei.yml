@@ -18,6 +18,7 @@ resources:
               - ${var.dvf_artifact_base_path}/data_validation_framework-${var.dvf_whl_version}-py3-none-any.whl
       tasks:
         - task_key: validate_invoice
+          max_retries: ${var.task_retry_on_failure}
           environment_key: default
           python_wheel_task:
             package_name: data-validation-framework
@@ -31,6 +32,7 @@ resources:
               - "${var.base_path_opei}"
 
         - task_key: validate_bu
+          max_retries: ${var.task_retry_on_failure}
           environment_key: default
           python_wheel_task:
             package_name: data-validation-framework
@@ -44,6 +46,7 @@ resources:
               - "${var.base_path_opei}"
 
         - task_key: validate_carrier
+          max_retries: ${var.task_retry_on_failure}
           environment_key: default
           python_wheel_task:
             package_name: data-validation-framework
@@ -57,6 +60,7 @@ resources:
               - "${var.base_path_opei}"
 
         - task_key: validate_hand
+          max_retries: ${var.task_retry_on_failure}
           environment_key: default
           python_wheel_task:
             package_name: data-validation-framework
@@ -70,6 +74,7 @@ resources:
               - "${var.base_path_opei}"
 
         - task_key: dlt_opei_pipeline
+          max_retries: ${var.task_retry_on_failure}
           depends_on:
             - task_key: validate_invoice
             - task_key: validate_bu

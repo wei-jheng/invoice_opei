@@ -72,6 +72,9 @@ variables:
   silver_source_flow_version_opei_iuo_hand_invoice_detail:
     description: "silver_source flow version for opei_iuo_hand_invoice_detail. Increment to force full reprocess."
     default: "1"
+  task_retry_on_failure:
+    description: "Default max retries for each task on failure. Override per task by hardcoding max_retries in the job YAML."
+    default: 0
   slack_notify_destination_id:
     description: "Notification Destination ID → #data-team-notify (job start/success)"
     default: ""
@@ -90,14 +93,14 @@ targets:
       log_level: DEBUG
       schema_opei: set_wei_jheng
       bronze_raw_table_suffix: _raw
-      bronze_raw_flow_version_opei_frontend_invoice_list: "2"
-      bronze_raw_flow_version_opei_iuo_invoice_detail: "2"
-      bronze_raw_flow_version_opei_iuo_carrier_inv_detail: "2"
-      bronze_raw_flow_version_opei_iuo_hand_invoice_detail: "2"
-      silver_source_flow_version_opei_frontend_invoice_list: "2"
-      silver_source_flow_version_opei_iuo_invoice_detail: "2"
-      silver_source_flow_version_opei_iuo_carrier_inv_detail: "2"
-      silver_source_flow_version_opei_iuo_hand_invoice_detail: "2"
+      bronze_raw_flow_version_opei_frontend_invoice_list: "3"
+      bronze_raw_flow_version_opei_iuo_invoice_detail: "3"
+      bronze_raw_flow_version_opei_iuo_carrier_inv_detail: "3"
+      bronze_raw_flow_version_opei_iuo_hand_invoice_detail: "3"
+      silver_source_flow_version_opei_frontend_invoice_list: "3"
+      silver_source_flow_version_opei_iuo_invoice_detail: "3"
+      silver_source_flow_version_opei_iuo_carrier_inv_detail: "3"
+      silver_source_flow_version_opei_iuo_hand_invoice_detail: "3"
 
   dev:
     workspace:

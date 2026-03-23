@@ -19,6 +19,7 @@ schema = "data_validation_framework.schema.set.opei.opei_iuo_carrier_inv_detail.
 encoding = "utf-8"
 quotechar = "\u0000"
 multi_line = false
+date_format = "yyyyMMdd"
 
 # =====================================
 # Daily Schedule Configuration

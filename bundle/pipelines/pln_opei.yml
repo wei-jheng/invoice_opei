@@ -18,7 +18,6 @@ resources:
           - ${var.pif_artifact_base_path}/pipeline_ingestion_framework-${var.pif_whl_version}-py3-none-any.whl
           - ${var.dvf_artifact_base_path}/data_validation_framework-${var.dvf_whl_version}-py3-none-any.whl
       configuration:
-        log_level: ${var.log_level}
         workspace_file_path: ${workspace.file_path}
         base_path: ${var.base_path_opei}
         start_date: ${var.start_date}

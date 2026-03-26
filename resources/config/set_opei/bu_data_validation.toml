@@ -15,7 +15,7 @@ file_name = "{date_folder}/bd_{file_date}.csv"
 type = "csv"
 delimiter = "|"
 has_header = false
-schema = "data_validation_framework.schema.set.opei.opei_iuo_invoice_detail.schema"
+schema = "data_validation_framework.schema.set.opei.opei_iuo_invoice_detail.SCHEMA"
 encoding = "utf-8"
 quotechar = "\u0000"
 multi_line = false
@@ -70,7 +70,7 @@ validator = {name = "FileReadableValidator"}
 id = "task_4"
 name = "FileSchemaCheck"
 enabled = true
-validator = {name = "SchemaValidator", expected_schema = "data_validation_framework.schema.set.opei.opei_iuo_invoice_detail.schema", check_columns = false}
+validator = {name = "SchemaValidator", expected_schema = "data_validation_framework.schema.set.opei.opei_iuo_invoice_detail.SCHEMA", check_columns = false}
 
 # -------------------------------
 [[task]]

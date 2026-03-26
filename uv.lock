@@ -311,6 +311,7 @@ requires-dist = [{ name = "pyarrow", specifier = ">=23.0.0,<24.0.0" }]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "griffe", specifier = ">=1.0.0" },
     { name = "mypy", specifier = ">=1.19.1" },
     { name = "pandas", specifier = ">=3.0.0,<4.0.0" },
     { name = "pre-commit", specifier = ">=4.5.1" },

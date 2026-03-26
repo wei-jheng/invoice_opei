@@ -26,38 +26,38 @@ _ALL_CDC_CONFIGS = [
 ]
 
 
-def test_all_opei_table_configs_defined():
+def test_all_opei_table_configs_defined() -> None:
     assert len(_ALL_TABLE_CONFIGS) == 4
 
 
-def test_all_opei_cdc_configs_defined():
+def test_all_opei_cdc_configs_defined() -> None:
     assert len(_ALL_CDC_CONFIGS) == 4
 
 
-def test_all_table_configs_are_set_opei():
+def test_all_table_configs_are_set_opei() -> None:
     for conf in _ALL_TABLE_CONFIGS:
         assert isinstance(conf, TableConfig)
         assert conf.file_source == 'set_opei'
 
 
-def test_all_table_configs_have_toml_config_file():
+def test_all_table_configs_have_toml_config_file() -> None:
     for conf in _ALL_TABLE_CONFIGS:
         assert conf.toml_config_file.startswith('set_opei/')
         assert conf.toml_config_file.endswith('.toml')
 
 
-def test_cdc_configs_pk_keys_not_empty():
+def test_cdc_configs_pk_keys_not_empty() -> None:
     for conf in _ALL_CDC_CONFIGS:
         assert isinstance(conf, CdcFlowTableConfig)
         assert len(conf.pk_keys) > 0, f'{conf.table} has empty pk_keys'
 
 
-def test_cdc_configs_sequence_cols_not_empty():
+def test_cdc_configs_sequence_cols_not_empty() -> None:
     for conf in _ALL_CDC_CONFIGS:
         assert len(conf.sequence_cols) > 0, f'{conf.table} has empty sequence_cols'
 
 
-def test_cdc_table_matches_table_config():
+def test_cdc_table_matches_table_config() -> None:
     assert OPEI_INVOICE_CDC.table == OPEI_INVOICE.table
     assert OPEI_IUO_INVOICE_DETAIL_CDC.table == OPEI_IUO_INVOICE_DETAIL.table
     assert OPEI_IUO_CARRIER_INV_DETAIL_CDC.table == OPEI_IUO_CARRIER_INV_DETAIL.table

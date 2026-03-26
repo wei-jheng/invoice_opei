@@ -417,7 +417,6 @@ dev/uat/prod 環境設為 `/Workspace/Shared/bundles/{package}/{env}/artifacts/.
 
 | Variable | 預設值 | 說明 |
 |----------|--------|------|
-| `log_level` | `INFO`（sandbox: `DEBUG`） | Pipeline log 等級（DEBUG / INFO / WARNING / ERROR） |
 | `slack_notify_destination_id` | `""` | Slack Notification Destination ID（#data-team-notify） |
 | `slack_alert_destination_id` | `""` | Slack Notification Destination ID（#data-team-alert） |
 
@@ -455,7 +454,7 @@ NEW_TABLE_CDC = CdcFlowTableConfig(
 
 **`bronze_raw/opei_<table_name>.py`**：
 ```python
-from data_validation_framework.schema.set.opei.<table_name> import schema
+from data_validation_framework.schema.set.opei.<table_name> import SCHEMA
 from pipeline_ingestion_framework.factory.registration import (
     BronzeRawTableSpec,
     register_bronze_raw_table,

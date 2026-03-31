@@ -353,6 +353,34 @@ resources/config/set_opei/
 └── hand_data_validation.toml      # opei_iuo_hand_invoice_detail
 ```
 
+### 更新驗證設定（不需 rebuild）
+
+TOML 設定檔是 DAB bundle 的 workspace files，**不打包進 wheel**。只需將新版 TOML 直接上傳至 Databricks workspace，下次 Job 執行時即自動生效，無需重新 build wheel 或 `bundle deploy`。
+
+```bash
+# opei_frontend_invoice_list
+databricks workspace import --overwrite \
+  invoice_opei/resources/config/set_opei/invoice_data_validation.toml \
+  /Shared/bundles/invoice_opei/<target>/files/resources/config/set_opei/invoice_data_validation.toml
+
+# opei_iuo_invoice_detail
+databricks workspace import --overwrite \
+  invoice_opei/resources/config/set_opei/bu_data_validation.toml \
+  /Shared/bundles/invoice_opei/<target>/files/resources/config/set_opei/bu_data_validation.toml
+
+# opei_iuo_carrier_inv_detail
+databricks workspace import --overwrite \
+  invoice_opei/resources/config/set_opei/carrier_data_validation.toml \
+  /Shared/bundles/invoice_opei/<target>/files/resources/config/set_opei/carrier_data_validation.toml
+
+# opei_iuo_hand_invoice_detail
+databricks workspace import --overwrite \
+  invoice_opei/resources/config/set_opei/hand_data_validation.toml \
+  /Shared/bundles/invoice_opei/<target>/files/resources/config/set_opei/hand_data_validation.toml
+```
+
+> `<target>` 替換為 `dev`、`uat` 或 `prod`。sandbox 路徑為 `~/.bundle/invoice_opei/files/...`（個人路徑）。
+
 ---
 
 ## 6. 設定參數說明
